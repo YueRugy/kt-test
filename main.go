@@ -14,6 +14,7 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	kitlog "github.com/go-kit/kit/log"
 )
 
 func main() {
@@ -31,9 +32,16 @@ func main() {
 	}
 	util.SetNameAndPort(*name, *port)
 
+	var logger kitlog.Logger
+	{
+		logger = kitlog.NewLogfmtLogger(os.Stdout)
+		logger = kitlog.WithPrefix(logger, "kit-test", "kit-1.0")
+		logger = kitlog.With(logger, "time", kitlog.DefaultTimestampUTC)
+		logger = kitlog.With(logger, "caller", kitlog.DefaultCaller)
+	}
 	us := UserService{}
 	l := rate.NewLimiter(1, 3)
-	e := RateLimit(l)(GetEndpoint(&us))
+	e := RateLimit(l)(UserLogger(logger)(GetEndpoint(&us)))
 	//e := service.GetEndpoint(&us)
 	options := []tranhttp.ServerOption{
 		tranhttp.ServerErrorEncoder(MyErrorEncoder),

@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"log"
 )
 
 type IUserService interface {
@@ -14,7 +13,6 @@ type UserService struct {
 }
 
 func (us *UserService) GetName(uid int) string {
-	log.Println(uid)
 	if uid == 101 {
 		return "yue"
 	}

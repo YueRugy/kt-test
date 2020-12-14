@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/log"
 	"golang.org/x/time/rate"
 	"kt-test/util"
 	"net/http"
@@ -17,6 +18,16 @@ type UserRequest struct {
 
 type UserResponse struct {
 	Name string `json:"name"`
+}
+
+func UserLogger(l log.Logger) endpoint.Middleware {
+	return func(e endpoint.Endpoint) endpoint.Endpoint {
+		return func(ctx context.Context, request interface{}) (response interface{}, err error) {
+			uid := request.(UserRequest).Uid
+			_ = l.Log("method", "GET", "uid", strconv.Itoa(uid))
+			return e(ctx, request)
+		}
+	}
 }
 
 func RateLimit(l *rate.Limiter) endpoint.Middleware {
