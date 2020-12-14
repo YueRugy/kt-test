@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	kitlog "github.com/go-kit/kit/log"
 	tranhttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 	"golang.org/x/time/rate"
@@ -14,7 +15,6 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
-	kitlog "github.com/go-kit/kit/log"
 )
 
 func main() {
